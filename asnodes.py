@@ -269,6 +269,9 @@ class MapRange_AS:
     CATEGORY = "ASNodes"
 
     def mapRange(self, value, in_0, in_1, out_0, out_1):
+        if (in_0 == in_1):
+            raise ValueError("MapRange_AS: in_0 and in_1 are equal")
+        
         run_param = (value - in_0) / (in_1 - in_0)
         result = out_0 + run_param * (out_1 - out_0)
         return (result, )
