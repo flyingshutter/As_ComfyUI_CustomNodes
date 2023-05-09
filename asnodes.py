@@ -264,7 +264,7 @@ class MapRange_AS:
             },
         }
 
-    RETURN_TYPES = ("FLOAT",)
+    RETURN_TYPES = ("FLOAT", "INT")
     FUNCTION = "mapRange"
     CATEGORY = "ASNodes"
 
@@ -274,7 +274,124 @@ class MapRange_AS:
         
         run_param = (value - in_0) / (in_1 - in_0)
         result = out_0 + run_param * (out_1 - out_0)
-        return (result, )
+        return (result, round(result))
+
+
+class Number2Float_AS:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "value": ("number", { }),
+            },
+        }
+
+    RETURN_TYPES = ("FLOAT",)
+    FUNCTION = "convert"
+    CATEGORY = "ASNodes"
+
+    def convert(self, value):
+        return (value, )
+
+
+class Int2Any_AS:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "value": ("INT", {"default": 0, }),
+            },
+        }
+
+    RETURN_TYPES = ("*",)
+    FUNCTION = "convert"
+    CATEGORY = "ASNodes"
+
+    def convert(self, value):
+        return (value, )
+
+
+class Number2Int_AS:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "value": ("number", { }),
+            },
+        }
+
+    RETURN_TYPES = ("INT",)
+    FUNCTION = "convert"
+    CATEGORY = "ASNodes"
+
+    def convert(self, value):
+        return (round(value), )
+
+
+class Number_AS:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "value": ("FLOAT", {"default": 0, "min": -sys.float_info.max, "max": sys.float_info.max, }),
+            },
+        }
+
+    RETURN_TYPES = ("number",)
+    FUNCTION = "doStuff"
+    CATEGORY = "ASNodes"
+
+    def doStuff(self, value):
+        return (value, )
+    
+
+class Math_AS:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "do": (["add", "subtract", "multiply", "divide", "power"], ),
+                "in_0": ("FLOAT", {"default": 0,}),
+                "in_1": ("FLOAT", {"default": 0,}),
+            },
+        }
+
+    RETURN_TYPES = ("FLOAT", "INT")
+    FUNCTION = "calculate"
+    CATEGORY = "ASNodes"
+
+    def calculate(self, do, in_0, in_1):
+        if do=="add":
+            result = in_0 + in_1
+        if do=="subtract":
+            result = in_0 - in_1
+        if do=="multiply":
+            result = in_0 * in_1
+        if do=="divide":
+            result = in_0 / in_1
+        if do=="power":
+            result = in_0 ** in_1
+
+        return (result, round(result) )
+    
+
+class Increment_AS:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "value": ("INT", {"default": 10, "min": 0, "max": 20, "step":3}),
+            },
+        }
+
+    RETURN_TYPES = ("number",)
+    FUNCTION = "doStuff"
+    CATEGORY = "ASNodes"
+
+    def doStuff(self, value):
+        return (value, )
+
+   
 
 
 # A dictionary that contains all nodes you want to export with their names
@@ -292,4 +409,10 @@ NODE_CLASS_MAPPINGS = {
     "TextToImage_AS": TextToImage_AS,
     "BatchIndex_AS": BatchIndex_AS,
     "MapRange_AS": MapRange_AS,
+    "Number_AS": Number_AS,
+    "Int2Any_AS": Int2Any_AS,
+    "Number2Int_AS": Number2Int_AS,
+    "Number2Float_AS": Number2Float_AS,
+    "Math_AS": Math_AS,
+    "Increment_AS": Increment_AS,
 }
