@@ -1,7 +1,7 @@
 import torch
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
-import sys
+import sys, os
 
 
 MAX_RESOLUTION = 8192
@@ -186,10 +186,12 @@ class ImageMixMasked_As:
 class TextToImage_AS:
     @classmethod
     def INPUT_TYPES(s):
+        fonts = os.listdir('C:\Windows\Fonts')
+
         return {
             "required": {
                 "text": ("STRING", {"multiline": True}),
-                "font": ("STRING", {"multiline": False}),
+                "font": (fonts, ),
                 "size": ("INT", {"default": 20, "min": 1, "max": MAX_RESOLUTION, "step": 1}),
                 "width": ("INT", {"default": 512, "min": 64, "max": MAX_RESOLUTION, "step": 64}),
                 "height": ("INT", {"default": 512, "min": 64, "max": MAX_RESOLUTION, "step": 64}),
@@ -391,7 +393,71 @@ class Increment_AS:
     def doStuff(self, value):
         return (value, )
 
-   
+
+class CropImage_AS:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {"required": { "image": ("IMAGE",),
+                             "width": ("INT", {"default": 0, "min": 0, "max": MAX_RESOLUTION}),
+                             "height": ("INT", {"default": 0, "min": 0, "max": MAX_RESOLUTION}),
+                             "x": ("INT", {"default": 0, "min": 0, "max": MAX_RESOLUTION}),
+                             "y": ("INT", {"default": 0, "min": 0, "max": MAX_RESOLUTION}),
+                         }}
+    
+    RETURN_TYPES = ("IMAGE",)
+    FUNCTION = "process"
+    CATEGORY = "ASNodes"
+
+    def process(self, image, width, height, x, y):
+
+        image_out = image.clone()   
+        print(image.shape) 
+        image_out = image_out[:, y:y+height, x:x+width]
+        return (image_out,)
+    
+
+class TextWildcardList_AS:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {"required": {"text": ("STRING", {"default": "$list", "multiline": True}), 
+                             "strings": ("STRING", {"multiline": True}), 
+                             "idx": ("INT", {"default": 0, "min": 0, "max": 0xffffffffffffffff}),
+                             }}
+    RETURN_TYPES = ("STRING",)
+    FUNCTION = "encode"
+
+    CATEGORY = "conditioning"
+
+    def encode(self, text, strings, idx):
+        string_list = strings.split(",")
+        wildcard = string_list[idx % len(string_list)].strip()
+        return (text.replace("$list", wildcard), )
+    
+
+class NoiseImage_AS:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "width": ("INT", {"default": 512, "min": 64, "max": MAX_RESOLUTION, "step": 64}),
+                "height": ("INT", {"default": 512, "min": 64, "max": MAX_RESOLUTION, "step": 64}),
+                "idx": ("INT", {"default": 0, "min": 0, "max": 0xffffffffffffffff}),
+            }
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    FUNCTION = "doStuff"
+    CATEGORY = "ASNodes"
+
+    def doStuff(self, width, height, idx):
+        new_image = torch.rand(
+            (1, height, width, 3),
+            dtype=torch.float32,
+        )
+        
+        return (new_image,)
+
+    
 
 
 # A dictionary that contains all nodes you want to export with their names
@@ -407,12 +473,15 @@ NODE_CLASS_MAPPINGS = {
     "LatentMixMasked_As": LatentMixMasked_As,
     "ImageMixMasked_As": ImageMixMasked_As,
     "TextToImage_AS": TextToImage_AS,
-    "BatchIndex_AS": BatchIndex_AS,
+    # "BatchIndex_AS": BatchIndex_AS,
     "MapRange_AS": MapRange_AS,
     "Number_AS": Number_AS,
     "Int2Any_AS": Int2Any_AS,
     "Number2Int_AS": Number2Int_AS,
     "Number2Float_AS": Number2Float_AS,
     "Math_AS": Math_AS,
-    "Increment_AS": Increment_AS,
+    # "Increment_AS": Increment_AS,
+    "CropImage_AS": CropImage_AS,
+    "TextWildcardList_AS": TextWildcardList_AS,
+    "NoiseImage_AS": NoiseImage_AS,
 }
