@@ -330,6 +330,38 @@ class Number2Int_AS:
         return (round(value), )
 
 
+class Eval_AS:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "optional": {
+                "i1": ("INT", { "default": 0, "step": 1 }),
+                "i2": ("INT", { "default": 0, "step": 1 }),
+                "f1": ("FLOAT", { "default": 0.0, "step": 0.1 }),
+                "f2": ("FLOAT", { "default": 0.0, "step": 0.1 }),
+                "s1": ("STRING", { "multiline": True, "default": "" }),
+                "s2": ("STRING", { "multiline": True, "default": "" }),
+            },
+            "required": {
+                "int_prc": ("STRING", { "multiline": False, "default": "0" }),
+                "float_prc": ("STRING", { "multiline": False, "default": "0" }),
+                "str_prc": ("STRING", { "multiline": False, "default": "0" }),
+            },
+
+        }
+
+    RETURN_TYPES = ("INT","FLOAT","STRING",)
+    FUNCTION = "do_stuff"
+    CATEGORY = "ASNodes"
+
+    def do_stuff(self, int_prc, float_prc, str_prc, i1, i2, f1, f2, s1, s2):
+        int_out = eval(int_prc)
+        float_out = eval(float_prc)
+        str_out = eval(str_prc)
+        
+        return (int_out, float_out, str_out )
+
+
 class Number_AS:
     @classmethod
     def INPUT_TYPES(cls):
@@ -484,4 +516,5 @@ NODE_CLASS_MAPPINGS = {
     "CropImage_AS": CropImage_AS,
     "TextWildcardList_AS": TextWildcardList_AS,
     "NoiseImage_AS": NoiseImage_AS,
+    "Eval_AS": Eval_AS,
 }
