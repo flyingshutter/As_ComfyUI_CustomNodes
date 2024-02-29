@@ -337,8 +337,8 @@ class Eval_AS:
             "optional": {
                 "i1": ("INT", { "default": 0, "step": 1 }),
                 "i2": ("INT", { "default": 0, "step": 1 }),
-                "f1": ("FLOAT", { "default": 0.0, "step": 0.1 }),
-                "f2": ("FLOAT", { "default": 0.0, "step": 0.1 }),
+                "f1": ("FLOAT", { "default": 0.0, "step": 0.1, "round": 0.01 }),
+                "f2": ("FLOAT", { "default": 0.0, "step": 0.1, "round": 0.01 }),
                 "s1": ("STRING", { "multiline": True, "default": "" }),
                 "s2": ("STRING", { "multiline": True, "default": "" }),
             },
@@ -385,8 +385,8 @@ class Math_AS:
         return {
             "required": {
                 "do": (["add", "subtract", "multiply", "divide", "power"], ),
-                "in_0": ("FLOAT", {"default": 0,}),
-                "in_1": ("FLOAT", {"default": 0,}),
+                "in_0": ("FLOAT", {"default": 0, "step": 0.01, "round": 0.01,}),
+                "in_1": ("FLOAT", {"default": 0, "step": 0.01, "round": 0.01,}),
             },
         }
 
