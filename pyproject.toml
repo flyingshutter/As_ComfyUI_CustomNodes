@@ -1,0 +1,14 @@
+[project]
+name = "as_comfyui_customnodes"
+description = "Manipulation nodes for Image, Latent"
+version = "1.0.0"
+license = "LICENSE"
+
+[project.urls]
+Repository = "https://github.com/flyingshutter/As_ComfyUI_CustomNodes"
+#  Used by Comfy Registry https://comfyregistry.org
+
+[tool.comfy]
+PublisherId = ""
+DisplayName = "As_ComfyUI_CustomNodes"
+Icon = ""
